@@ -1,0 +1,37 @@
+package com.example.computerclub.domain.usecase
+
+import com.example.computerclub.domain.model.SeatLayout
+import com.example.computerclub.domain.repository.ComputerClubRepository
+
+class LoadSeatsUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke(clubId: Int, typeId: Int) = repository.loadSeats(clubId, typeId)
+}
+
+class LoadAllSeatsUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke(clubId: Int) = repository.loadAllSeats(clubId)
+}
+
+class LoadSeatLayoutsUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke(): Result<List<SeatLayout>> = repository.getSeatLayouts()
+}
+
+class LoadSeatTypesUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke() = repository.loadSeatTypes()
+}
+
+class LoadClubsUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke() = repository.loadClubs()
+}
+
+class CreateBookingUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke(seatId: Int, startTime: String, endTime: String) =
+        repository.createBooking(seatId, startTime, endTime)
+}
+
+class LoadMyBookingsUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke() = repository.loadMyBookings()
+}
+
+class CancelBookingUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke(bookingId: Int) = repository.cancelBooking(bookingId)
+}
