@@ -31,7 +31,8 @@ fun SeatDto.toDomain() = Seat(
     processor = processor,
     gpu = gpu,
     ram = ram,
-    monitor = monitor
+    monitor = monitor,
+    isActive = isActive
 )
 
 fun SeatTypeDto.toDomain() = SeatType(
@@ -46,6 +47,7 @@ fun SeatTypeDto.toDomain() = SeatType(
 
 fun SeatLayoutDto.toDomain() = SeatLayout(
     id = id,
+    seatId = seatId,
     label = label,
     room = room,
     x = x,

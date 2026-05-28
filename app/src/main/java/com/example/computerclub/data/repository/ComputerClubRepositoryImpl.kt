@@ -5,6 +5,8 @@ import com.example.computerclub.data.model.CreateBookingRequestDto
 import com.example.computerclub.data.model.LoginRequestDto
 import com.example.computerclub.data.model.RefreshTokenRequestDto
 import com.example.computerclub.data.model.RegisterRequestDto
+import com.example.computerclub.data.model.UpdateSeatNameRequestDto
+import com.example.computerclub.data.model.UpdateSeatStatusRequestDto
 import com.example.computerclub.data.model.toDomain
 import com.example.computerclub.data.remote.ApiErrorParser
 import com.example.computerclub.data.remote.ComputerClubApi
@@ -87,6 +89,40 @@ class ComputerClubRepositoryImpl(
     override suspend fun cancelBooking(bookingId: Int): Result<Unit> = safeCall {
         val response = authorizedResponse { token -> api.cancelBooking(token, bookingId) }
         if (!response.isSuccessful) error(ApiErrorParser.message(response))
+    }
+
+    override suspend fun getAllBookings(): Result<List<Booking>> = safeCall {
+        authorizedBody { token -> api.getAllBookings(token) }.map { it.toDomain() }
+    }
+
+    override suspend fun adminCancelBooking(bookingId: Int): Result<Unit> = safeCall {
+        val response = authorizedResponse { token -> api.adminCancelBooking(token, bookingId) }
+        if (!response.isSuccessful) error(ApiErrorParser.message(response))
+    }
+
+    override suspend fun deactivateSeat(seatId: Int): Result<Unit> = safeCall {
+        val response = authorizedResponse { token -> api.deactivateSeat(token, seatId) }
+        if (!response.isSuccessful) error(ApiErrorParser.message(response))
+    }
+
+    override suspend fun updateSeatName(seatId: Int, name: String): Result<Seat> = safeCall {
+        authorizedBody { token ->
+            api.updateSeatName(
+                token = token,
+                seatId = seatId,
+                request = UpdateSeatNameRequestDto(name.trim())
+            )
+        }.toDomain()
+    }
+
+    override suspend fun updateSeatStatus(seatId: Int, isActive: Boolean): Result<Seat> = safeCall {
+        authorizedBody { token ->
+            api.updateSeatStatus(
+                token = token,
+                seatId = seatId,
+                request = UpdateSeatStatusRequestDto(isActive)
+            )
+        }.toDomain()
     }
 
     private suspend fun authHeader(): String {

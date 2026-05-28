@@ -34,4 +34,14 @@ interface ComputerClubRepository {
     suspend fun loadMyBookings(): Result<List<Booking>>
 
     suspend fun cancelBooking(bookingId: Int): Result<Unit>
+
+    suspend fun getAllBookings(): Result<List<Booking>>
+
+    suspend fun adminCancelBooking(bookingId: Int): Result<Unit>
+
+    suspend fun deactivateSeat(seatId: Int): Result<Unit>
+
+    suspend fun updateSeatName(seatId: Int, name: String): Result<Seat>
+
+    suspend fun updateSeatStatus(seatId: Int, isActive: Boolean): Result<Seat>
 }

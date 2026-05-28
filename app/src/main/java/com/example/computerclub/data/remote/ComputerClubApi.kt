@@ -10,12 +10,15 @@ import com.example.computerclub.data.model.RegisterRequestDto
 import com.example.computerclub.data.model.SeatDto
 import com.example.computerclub.data.model.SeatLayoutDto
 import com.example.computerclub.data.model.SeatTypeDto
+import com.example.computerclub.data.model.UpdateSeatNameRequestDto
+import com.example.computerclub.data.model.UpdateSeatStatusRequestDto
 import com.example.computerclub.data.model.UserDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -63,4 +66,33 @@ interface ComputerClubApi {
         @Header("Authorization") token: String,
         @Path("id") bookingId: Int
     ): Response<Unit>
+
+    @GET("admin/bookings")
+    suspend fun getAllBookings(@Header("Authorization") token: String): Response<List<BookingDto>>
+
+    @DELETE("admin/bookings/{id}")
+    suspend fun adminCancelBooking(
+        @Header("Authorization") token: String,
+        @Path("id") bookingId: Int
+    ): Response<Unit>
+
+    @DELETE("admin/seats/{id}")
+    suspend fun deactivateSeat(
+        @Header("Authorization") token: String,
+        @Path("id") seatId: Int
+    ): Response<Unit>
+
+    @PATCH("admin/seats/{id}/name")
+    suspend fun updateSeatName(
+        @Header("Authorization") token: String,
+        @Path("id") seatId: Int,
+        @Body request: UpdateSeatNameRequestDto
+    ): Response<SeatDto>
+
+    @PATCH("admin/seats/{id}/status")
+    suspend fun updateSeatStatus(
+        @Header("Authorization") token: String,
+        @Path("id") seatId: Int,
+        @Body request: UpdateSeatStatusRequestDto
+    ): Response<SeatDto>
 }

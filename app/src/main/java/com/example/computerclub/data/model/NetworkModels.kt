@@ -58,6 +58,7 @@ data class SeatTypeDto(
 
 data class SeatLayoutDto(
     val id: String,
+    val seatId: Int? = null,
     val label: String,
     val room: String,
     val x: Int,
@@ -83,6 +84,14 @@ data class CreateBookingRequestDto(
     val seatId: Int,
     val startTime: String,
     val endTime: String
+)
+
+data class UpdateSeatNameRequestDto(
+    val name: String
+)
+
+data class UpdateSeatStatusRequestDto(
+    val isActive: Boolean
 )
 
 data class RefreshTokenRequestDto(

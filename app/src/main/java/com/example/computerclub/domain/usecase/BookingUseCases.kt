@@ -35,3 +35,23 @@ class LoadMyBookingsUseCase(private val repository: ComputerClubRepository) {
 class CancelBookingUseCase(private val repository: ComputerClubRepository) {
     suspend operator fun invoke(bookingId: Int) = repository.cancelBooking(bookingId)
 }
+
+class GetAllBookingsUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke() = repository.getAllBookings()
+}
+
+class AdminCancelBookingUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke(bookingId: Int) = repository.adminCancelBooking(bookingId)
+}
+
+class DeactivateSeatUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke(seatId: Int) = repository.deactivateSeat(seatId)
+}
+
+class UpdateSeatNameUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke(seatId: Int, name: String) = repository.updateSeatName(seatId, name)
+}
+
+class UpdateSeatStatusUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke(seatId: Int, isActive: Boolean) = repository.updateSeatStatus(seatId, isActive)
+}

@@ -17,7 +17,8 @@ data class Seat(
     val processor: String,
     val gpu: String,
     val ram: String,
-    val monitor: String
+    val monitor: String,
+    val isActive: Boolean = true
 )
 
 data class SeatType(
@@ -32,6 +33,7 @@ data class SeatType(
 
 data class SeatLayout(
     val id: String,
+    val seatId: Int? = null,
     val label: String,
     val room: String,
     val x: Int,

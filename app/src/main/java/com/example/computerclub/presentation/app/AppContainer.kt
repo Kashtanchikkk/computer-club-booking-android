@@ -5,8 +5,11 @@ import com.example.computerclub.data.local.TokenStorage
 import com.example.computerclub.data.remote.NetworkModule
 import com.example.computerclub.data.repository.ComputerClubRepositoryImpl
 import com.example.computerclub.domain.repository.ComputerClubRepository
+import com.example.computerclub.domain.usecase.AdminCancelBookingUseCase
 import com.example.computerclub.domain.usecase.CancelBookingUseCase
 import com.example.computerclub.domain.usecase.CreateBookingUseCase
+import com.example.computerclub.domain.usecase.DeactivateSeatUseCase
+import com.example.computerclub.domain.usecase.GetAllBookingsUseCase
 import com.example.computerclub.domain.usecase.LoadAllSeatsUseCase
 import com.example.computerclub.domain.usecase.LoadClubsUseCase
 import com.example.computerclub.domain.usecase.LoadMyBookingsUseCase
@@ -17,6 +20,8 @@ import com.example.computerclub.domain.usecase.LoginUseCase
 import com.example.computerclub.domain.usecase.LogoutUseCase
 import com.example.computerclub.domain.usecase.RegisterUseCase
 import com.example.computerclub.domain.usecase.RestoreSessionUseCase
+import com.example.computerclub.domain.usecase.UpdateSeatNameUseCase
+import com.example.computerclub.domain.usecase.UpdateSeatStatusUseCase
 
 class AppContainer(context: Context) {
     private val repository: ComputerClubRepository = ComputerClubRepositoryImpl(
@@ -36,4 +41,9 @@ class AppContainer(context: Context) {
     val createBookingUseCase = CreateBookingUseCase(repository)
     val loadMyBookingsUseCase = LoadMyBookingsUseCase(repository)
     val cancelBookingUseCase = CancelBookingUseCase(repository)
+    val getAllBookingsUseCase = GetAllBookingsUseCase(repository)
+    val adminCancelBookingUseCase = AdminCancelBookingUseCase(repository)
+    val deactivateSeatUseCase = DeactivateSeatUseCase(repository)
+    val updateSeatNameUseCase = UpdateSeatNameUseCase(repository)
+    val updateSeatStatusUseCase = UpdateSeatStatusUseCase(repository)
 }
