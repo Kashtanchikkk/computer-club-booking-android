@@ -23,6 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.computerclub.domain.model.Seat
+import com.example.computerclub.domain.model.Booking
+import com.example.computerclub.presentation.admin.AdminScreen
+import com.example.computerclub.presentation.admin.AdminSection
+import com.example.computerclub.presentation.admin.AdminUiState
 import com.example.computerclub.presentation.booking.ClubMap
 import com.example.computerclub.presentation.booking.DateAndTimeStep
 import com.example.computerclub.presentation.booking.availableStartSlots
@@ -49,7 +53,15 @@ fun HomeScreen(
     onSeatTypeSelected: (Int) -> Unit,
     onPeriodSelected: (Int, Int, Int) -> Unit,
     onSeatsSelected: (List<Seat>) -> Unit,
-    onCancelBooking: (Int) -> Unit
+    onCancelBooking: (Int) -> Unit,
+    adminState: AdminUiState,
+    onAdminSectionSelected: (AdminSection) -> Unit,
+    onRefreshAdminBookings: () -> Unit,
+    onRefreshAdminSeats: () -> Unit,
+    onAdminCancelBooking: (Int) -> Unit,
+    onUpdateSeatName: (Seat, String) -> Unit,
+    onDeactivateSeat: (Seat) -> Unit,
+    onRestoreSeat: (Seat) -> Unit
 ) {
     var bookingStep by remember { mutableIntStateOf(1) }
     var selectedDateOffset by remember { mutableIntStateOf(0) }
@@ -66,13 +78,16 @@ fun HomeScreen(
         showBookingRules = false
         onTabSelected(HomeTab.Seats)
     }
-    val bookedSeatIds = state.bookedSeatIdsForSelectedPeriod()
+    val isAdmin = state.user?.role == "admin"
+    val availabilityBookings = if (isAdmin) adminState.bookings else state.bookings
+    val bookedSeatIds = state.bookedSeatIdsForSelectedPeriod(availabilityBookings)
 
     Scaffold(
         containerColor = HomeBg,
         bottomBar = {
             HomeBottomBar(
                 selectedTab = state.selectedTab,
+                isAdmin = isAdmin,
                 onTabSelected = onTabSelected,
                 onBookingSelected = ::requestBookingStart
             )
@@ -113,8 +128,21 @@ fun HomeScreen(
                     onNextStep = { bookingStep = 2 },
                     onSeatsSelected = onSeatsSelected
                 )
-                HomeTab.Bookings -> bookingsTab(state, onTabSelected, onRefreshBookings, onCancelBooking)
+                HomeTab.Bookings -> bookingsTab(state, onRefreshBookings, onCancelBooking)
                 HomeTab.Profile -> profileTab(state, onTabSelected, onLogout)
+                HomeTab.Admin -> item {
+                    AdminScreen(
+                        state = adminState,
+                        onSectionSelected = onAdminSectionSelected,
+                        onRefreshBookings = onRefreshAdminBookings,
+                        onRefreshSeats = onRefreshAdminSeats,
+                        onCancelBooking = onAdminCancelBooking,
+                        onUpdateSeatName = onUpdateSeatName,
+                        onDeactivateSeat = onDeactivateSeat,
+                        onRestoreSeat = onRestoreSeat,
+                        onLogout = onLogout
+                    )
+                }
             }
         }
     }
@@ -126,6 +154,12 @@ fun HomeScreen(
         )
     }
 }
+
+private fun ComputerClubUiState.bookedSeatIdsForSelectedPeriod(bookings: List<Booking>): Set<Int> =
+    bookings
+        .filter { it.status.lowercase() != "cancelled" && com.example.computerclub.presentation.home.utils.BookingTimeUtils.overlaps(startTime, endTime, it) }
+        .map { it.seatId }
+        .toSet()
 
 @Composable
 private fun BookingRulesDialog(onDismiss: () -> Unit, onAccept: () -> Unit) {
@@ -212,14 +246,13 @@ private fun androidx.compose.foundation.lazy.LazyListScope.seatsTab(
 
 private fun androidx.compose.foundation.lazy.LazyListScope.bookingsTab(
     state: ComputerClubUiState,
-    onTabSelected: (HomeTab) -> Unit,
     onRefreshBookings: () -> Unit,
     onCancelBooking: (Int) -> Unit
 ) {
     val activeBookings = state.bookings.filter { it.isActiveBooking() }
     val historyBookings = state.bookings.filterNot { it.isActiveBooking() }
 
-    item { BackHeader("Мои бронирования", null) { onTabSelected(HomeTab.Main) } }
+    item { PageHeader("Мои бронирования") }
     item { SectionHeader("Активные брони", onRefreshBookings) }
     item { StatusAndLoading(state) }
     if (activeBookings.isEmpty()) {
@@ -241,7 +274,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.profileTab(
     onTabSelected: (HomeTab) -> Unit,
     onLogout: () -> Unit
 ) {
-    item { BackHeader("Профиль", null) { onTabSelected(HomeTab.Main) } }
+    item { PageHeader("Профиль") }
     item {
         ProfileCard(
             state = state,

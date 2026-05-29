@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.computerclub.presentation.app.AppContainer
+import com.example.computerclub.presentation.admin.AdminViewModel
 import com.example.computerclub.presentation.auth.AuthViewModel
 import com.example.computerclub.presentation.home.HomeViewModel
 import com.example.computerclub.presentation.navigation.ComputerClubApp
@@ -30,13 +31,24 @@ class MainActivity : ComponentActivity() {
             loadMyBookingsUseCase = appContainer.loadMyBookingsUseCase,
             cancelBookingUseCase = appContainer.cancelBookingUseCase
         )
+        val adminViewModelFactory = AdminViewModel.Factory(
+            getAllBookingsUseCase = appContainer.getAllBookingsUseCase,
+            adminCancelBookingUseCase = appContainer.adminCancelBookingUseCase,
+            loadClubsUseCase = appContainer.loadClubsUseCase,
+            loadAllSeatsUseCase = appContainer.loadAllSeatsUseCase,
+            loadSeatLayoutsUseCase = appContainer.loadSeatLayoutsUseCase,
+            deactivateSeatUseCase = appContainer.deactivateSeatUseCase,
+            updateSeatNameUseCase = appContainer.updateSeatNameUseCase,
+            updateSeatStatusUseCase = appContainer.updateSeatStatusUseCase
+        )
 
         enableEdgeToEdge()
         setContent {
             ComputerClubAppTheme {
                 ComputerClubApp(
                     authViewModelFactory = authViewModelFactory,
-                    homeViewModelFactory = homeViewModelFactory
+                    homeViewModelFactory = homeViewModelFactory,
+                    adminViewModelFactory = adminViewModelFactory
                 )
             }
         }

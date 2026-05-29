@@ -46,7 +46,7 @@ data class ComputerClubUiState(
     val message: String? = null
 )
 
-enum class HomeTab { Main, Seats, Bookings, Profile }
+enum class HomeTab { Main, Seats, Bookings, Profile, Admin }
 
 class HomeViewModel(
     private val loadClubsUseCase: LoadClubsUseCase,
@@ -99,6 +99,27 @@ class HomeViewModel(
 
     fun clearSelectedSeats() {
         _state.update { it.copy(selectedSeats = emptyList(), message = null) }
+    }
+
+    fun applyAdminSeatAvailability(seat: Seat, isActive: Boolean) {
+        val updatedSeat = seat.copy(isActive = isActive)
+        _state.update { current ->
+            current.copy(
+                allSeats = current.allSeats.upsertSeat(updatedSeat),
+                seats = current.seats.replaceSeatIfPresent(updatedSeat),
+                selectedSeats = current.selectedSeats.filterNot { it.id == seat.id }
+            )
+        }
+    }
+
+    fun applyAdminSeatName(seat: Seat) {
+        _state.update { current ->
+            current.copy(
+                allSeats = current.allSeats.upsertSeat(seat),
+                seats = current.seats.replaceSeatIfPresent(seat),
+                selectedSeats = current.selectedSeats.replaceSeatIfPresent(seat)
+            )
+        }
     }
 
     fun loadClubs() {
@@ -231,6 +252,16 @@ class HomeViewModel(
     private fun showError(error: Throwable) {
         _state.update { it.copy(message = error.message ?: "Ошибка") }
     }
+
+    private fun List<Seat>.upsertSeat(seat: Seat): List<Seat> =
+        if (any { it.id == seat.id }) {
+            map { if (it.id == seat.id) seat else it }
+        } else {
+            this + seat
+        }
+
+    private fun List<Seat>.replaceSeatIfPresent(seat: Seat): List<Seat> =
+        map { if (it.id == seat.id) seat else it }
 
     class Factory(
         private val loadClubsUseCase: LoadClubsUseCase,

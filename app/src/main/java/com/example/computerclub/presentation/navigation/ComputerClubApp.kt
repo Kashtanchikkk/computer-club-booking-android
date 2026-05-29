@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.computerclub.presentation.admin.AdminViewModel
 import com.example.computerclub.presentation.auth.AuthScreen
 import com.example.computerclub.presentation.auth.AuthViewModel
 import com.example.computerclub.presentation.booking.BookingScreen
@@ -34,12 +35,15 @@ import kotlinx.coroutines.delay
 @Composable
 fun ComputerClubApp(
     authViewModelFactory: AuthViewModel.Factory,
-    homeViewModelFactory: HomeViewModel.Factory
+    homeViewModelFactory: HomeViewModel.Factory,
+    adminViewModelFactory: AdminViewModel.Factory
 ) {
     val authViewModel: AuthViewModel = viewModel(factory = authViewModelFactory)
     val homeViewModel: HomeViewModel = viewModel(factory = homeViewModelFactory)
+    val adminViewModel: AdminViewModel = viewModel(factory = adminViewModelFactory)
     val authState by authViewModel.state.collectAsState()
     val state by homeViewModel.state.collectAsState()
+    val adminState by adminViewModel.state.collectAsState()
     var showSplash by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
@@ -49,6 +53,7 @@ fun ComputerClubApp(
 
     LaunchedEffect(authState.user?.id) {
         homeViewModel.onUserChanged(authState.user)
+        adminViewModel.onUserChanged(authState.user)
     }
 
     Surface(modifier = Modifier.fillMaxSize(), color = Color(0xFF090A0F)) {
@@ -79,7 +84,27 @@ fun ComputerClubApp(
                 onSeatTypeSelected = homeViewModel::selectSeatType,
                 onPeriodSelected = homeViewModel::selectBookingPeriod,
                 onSeatsSelected = homeViewModel::selectSeats,
-                onCancelBooking = homeViewModel::cancelBooking
+                onCancelBooking = homeViewModel::cancelBooking,
+                adminState = adminState,
+                onAdminSectionSelected = adminViewModel::selectSection,
+                onRefreshAdminBookings = adminViewModel::loadBookings,
+                onRefreshAdminSeats = adminViewModel::loadSeats,
+                onAdminCancelBooking = adminViewModel::cancelBooking,
+                onUpdateSeatName = { seat, name ->
+                    adminViewModel.updateSeatName(seat.id, name) { updatedSeat ->
+                        homeViewModel.applyAdminSeatName(updatedSeat)
+                    }
+                },
+                onDeactivateSeat = { seat ->
+                    adminViewModel.deactivateSeat(seat.id) { updatedSeat ->
+                        homeViewModel.applyAdminSeatAvailability(updatedSeat, isActive = false)
+                    }
+                },
+                onRestoreSeat = { seat ->
+                    adminViewModel.restoreSeat(seat.id) { updatedSeat ->
+                        homeViewModel.applyAdminSeatAvailability(updatedSeat, isActive = true)
+                    }
+                }
             )
         }
     }

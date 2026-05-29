@@ -53,6 +53,11 @@ internal fun BackHeader(title: String, subtitle: String?, onBack: () -> Unit) {
 }
 
 @Composable
+internal fun PageHeader(title: String) {
+    Text(title, color = Color.White, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
+}
+
+@Composable
 internal fun StepIndicator(step: Int) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         StepItem("Дата и время", active = step >= 1, modifier = Modifier.weight(1f))

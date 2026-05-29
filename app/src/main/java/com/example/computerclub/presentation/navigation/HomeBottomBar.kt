@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -18,6 +19,7 @@ import com.example.computerclub.ui.theme.HomeRed
 @Composable
 internal fun HomeBottomBar(
     selectedTab: HomeTab,
+    isAdmin: Boolean,
     onTabSelected: (HomeTab) -> Unit,
     onBookingSelected: () -> Unit
 ) {
@@ -36,13 +38,23 @@ internal fun HomeBottomBar(
             label = { Text("Брони") },
             colors = bottomBarItemColors()
         )
-        NavigationBarItem(
-            selected = selectedTab == HomeTab.Profile,
-            onClick = { onTabSelected(HomeTab.Profile) },
-            icon = { Icon(Icons.Default.Person, contentDescription = "Профиль") },
-            label = { Text("Профиль") },
-            colors = bottomBarItemColors()
-        )
+        if (isAdmin) {
+            NavigationBarItem(
+                selected = selectedTab == HomeTab.Admin,
+                onClick = { onTabSelected(HomeTab.Admin) },
+                icon = { Icon(Icons.Default.Settings, contentDescription = "Администрирование") },
+                label = { Text("Администрирование") },
+                colors = bottomBarItemColors()
+            )
+        } else {
+            NavigationBarItem(
+                selected = selectedTab == HomeTab.Profile,
+                onClick = { onTabSelected(HomeTab.Profile) },
+                icon = { Icon(Icons.Default.Person, contentDescription = "Профиль") },
+                label = { Text("Профиль") },
+                colors = bottomBarItemColors()
+            )
+        }
     }
 }
 
