@@ -34,6 +34,7 @@ internal fun ClubMapCanvas(
 ) {
     var scale by remember { mutableStateOf(0.45f) }
     var mapOffset by remember { mutableStateOf(Offset.Zero) }
+    val seatsById = seats.associateBy { it.id }
     val seatsByName = seats.associateBy { it.name }
 
     Box(
@@ -84,7 +85,7 @@ internal fun ClubMapCanvas(
             MapRoom("TRIO", 1147, 625, 220, 155)
 
             layouts.forEach { layout ->
-                val seat = seatsByName[layout.id]
+                val seat = layout.seatId?.let(seatsById::get) ?: seatsByName[layout.id]
                 MapSeatButton(
                     layout = layout,
                     seat = seat,

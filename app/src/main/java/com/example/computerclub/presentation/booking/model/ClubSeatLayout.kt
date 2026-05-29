@@ -5,6 +5,7 @@ import com.example.computerclub.domain.model.SeatLayout
 
 data class ClubSeatLayout(
     val id: String,
+    val seatId: Int?,
     val label: String,
     val room: String,
     val x: Int,
@@ -17,6 +18,7 @@ data class ClubSeatLayout(
 
 internal fun SeatLayout.toUiModel(): ClubSeatLayout = ClubSeatLayout(
     id = id,
+    seatId = seatId,
     label = label,
     room = room,
     x = x,

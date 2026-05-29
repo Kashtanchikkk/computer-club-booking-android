@@ -28,6 +28,7 @@ internal fun MapLegend() {
     ) {
         LegendItem("свободно", Color(0xFFF6F0DA), Modifier.weight(1f))
         LegendItem("занято", Color(0xFF4A4A4F), Modifier.weight(1f))
+        LegendItem("недоступно", Color(0xFF2E3138), Modifier.weight(1f))
         LegendItem("выбрано", Color(0xFFFFFF66), Modifier.weight(1f))
     }
 }

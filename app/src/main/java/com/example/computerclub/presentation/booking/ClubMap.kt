@@ -2,6 +2,7 @@ package com.example.computerclub.presentation.booking
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +27,12 @@ internal fun ClubMap(
     onSeatsSelected: (List<Seat>) -> Unit
 ) {
     var selectedSeats by remember { mutableStateOf<List<Seat>>(emptyList()) }
+
+    LaunchedEffect(bookedSeatIds, seats) {
+        selectedSeats = selectedSeats.filter { seat ->
+            seat.id !in bookedSeatIds && seats.any { it.id == seat.id }
+        }
+    }
 
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         when {
