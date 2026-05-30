@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.computerclub.domain.model.Booking
 import com.example.computerclub.presentation.booking.bookingDisplayDate
@@ -175,14 +176,28 @@ private fun BookingHistoryCard(
 ) {
     Card(shape = RoundedCornerShape(26.dp), colors = CardDefaults.cardColors(containerColor = HomeCardBg), border = BorderStroke(1.dp, HomeStroke)) {
         Column(modifier = Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text("История бронирований", color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp, end = 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "История бронирований",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Black,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f).padding(end = 12.dp)
+                )
                 Row(
                     modifier = Modifier.clickable(onClick = onBookingsClick),
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Смотреть все", color = Color(0xFFC084FC), fontWeight = FontWeight.Black)
+                    Text("Смотреть все", color = Color(0xFFC084FC), fontWeight = FontWeight.Black, maxLines = 1)
                     Icon(Icons.Default.ChevronRight, contentDescription = "Смотреть все", tint = Color(0xFFC084FC), modifier = Modifier.size(22.dp))
                 }
             }
@@ -217,7 +232,6 @@ private fun BookingHistoryRow(booking: Booking) {
             Text(booking.durationText(), color = HomeMuted, fontWeight = FontWeight.Bold)
         }
         StatusBadge(booking)
-        Icon(Icons.Default.ChevronRight, contentDescription = "Подробнее", tint = HomeMuted, modifier = Modifier.size(26.dp))
     }
 }
 
