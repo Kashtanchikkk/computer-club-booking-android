@@ -11,12 +11,12 @@ import com.example.computerclub.domain.model.User
 import com.example.computerclub.domain.usecase.CancelBookingUseCase
 import com.example.computerclub.domain.usecase.CreateBookingUseCase
 import com.example.computerclub.domain.usecase.LoadAllSeatsUseCase
+import com.example.computerclub.domain.usecase.LoadClubMapUseCase
 import com.example.computerclub.domain.usecase.LoadClubsUseCase
 import com.example.computerclub.domain.usecase.LoadMyBookingsUseCase
-import com.example.computerclub.domain.usecase.LoadSeatLayoutsUseCase
 import com.example.computerclub.domain.usecase.LoadSeatTypesUseCase
 import com.example.computerclub.domain.usecase.LoadSeatsUseCase
-import com.example.computerclub.presentation.booking.model.ClubSeatLayout
+import com.example.computerclub.presentation.booking.model.MapObjectModel
 import com.example.computerclub.presentation.booking.model.toUiModel
 import com.example.computerclub.presentation.home.utils.BookingTimeUtils
 import com.example.computerclub.presentation.home.utils.withBookingPeriod
@@ -29,9 +29,9 @@ data class ComputerClubUiState(
     val isLoading: Boolean = false,
     val user: User? = null,
     val allSeats: List<Seat> = emptyList(),
-    val seatLayouts: List<ClubSeatLayout> = emptyList(),
-    val isSeatLayoutsLoading: Boolean = false,
-    val seatLayoutsError: String? = null,
+    val mapObjects: List<MapObjectModel> = emptyList(),
+    val isMapLoading: Boolean = false,
+    val mapError: String? = null,
     val seats: List<Seat> = emptyList(),
     val bookings: List<Booking> = emptyList(),
     val clubs: List<ComputerClubBranch> = emptyList(),
@@ -53,7 +53,7 @@ class HomeViewModel(
     private val loadSeatTypesUseCase: LoadSeatTypesUseCase,
     private val loadSeatsUseCase: LoadSeatsUseCase,
     private val loadAllSeatsUseCase: LoadAllSeatsUseCase,
-    private val loadSeatLayoutsUseCase: LoadSeatLayoutsUseCase,
+    private val loadClubMapUseCase: LoadClubMapUseCase,
     private val createBookingUseCase: CreateBookingUseCase,
     private val loadMyBookingsUseCase: LoadMyBookingsUseCase,
     private val cancelBookingUseCase: CancelBookingUseCase
@@ -67,15 +67,15 @@ class HomeViewModel(
             return
         }
         if (state.value.user?.id == user.id) return
-        _state.update { it.copy(user = user, message = "Вы вошли как ${user.name}") }
+        _state.value = ComputerClubUiState(user = user, message = "Вы вошли как ${user.name}")
         loadClubs()
         loadSeatTypes()
-        loadSeatLayouts()
         loadBookings()
     }
 
     fun selectClub(clubId: Int) {
         _state.update { it.copy(selectedClubId = clubId, seats = emptyList()) }
+        loadClubMap()
         loadSeats()
     }
 
@@ -128,6 +128,7 @@ class HomeViewModel(
                 .onSuccess { clubs ->
                     val singleClub = clubs.take(1)
                     _state.update { it.copy(clubs = singleClub, selectedClubId = singleClub.firstOrNull()?.id) }
+                    loadClubMap()
                     loadAllSeats()
                     loadSeats()
                 }
@@ -172,28 +173,34 @@ class HomeViewModel(
         }
     }
 
-    fun loadSeatLayouts() {
+    fun loadClubMap() {
+        val clubId = state.value.selectedClubId ?: return
         viewModelScope.launch {
-            _state.update { it.copy(isSeatLayoutsLoading = true, seatLayoutsError = null) }
-            loadSeatLayoutsUseCase()
-                .onSuccess { layouts ->
+            _state.update { it.copy(isMapLoading = true, mapError = null) }
+            loadClubMapUseCase(clubId)
+                .onSuccess { mapObjects ->
                     _state.update {
                         it.copy(
-                            seatLayouts = layouts.map { layout -> layout.toUiModel() },
-                            isSeatLayoutsLoading = false,
-                            seatLayoutsError = null
+                            mapObjects = mapObjects.map { mapObject -> mapObject.toUiModel() },
+                            isMapLoading = false,
+                            mapError = null
                         )
                     }
                 }
                 .onFailure {
                     _state.update { current ->
                         current.copy(
-                            isSeatLayoutsLoading = false,
-                            seatLayoutsError = "Не удалось загрузить схему клуба"
+                            isMapLoading = false,
+                            mapError = "Не удалось загрузить схему клуба"
                         )
                     }
                 }
         }
+    }
+
+    fun refreshMapData() {
+        loadAllSeats()
+        loadClubMap()
     }
 
     fun loadBookings() {
@@ -268,7 +275,7 @@ class HomeViewModel(
         private val loadSeatTypesUseCase: LoadSeatTypesUseCase,
         private val loadSeatsUseCase: LoadSeatsUseCase,
         private val loadAllSeatsUseCase: LoadAllSeatsUseCase,
-        private val loadSeatLayoutsUseCase: LoadSeatLayoutsUseCase,
+        private val loadClubMapUseCase: LoadClubMapUseCase,
         private val createBookingUseCase: CreateBookingUseCase,
         private val loadMyBookingsUseCase: LoadMyBookingsUseCase,
         private val cancelBookingUseCase: CancelBookingUseCase
@@ -280,7 +287,7 @@ class HomeViewModel(
                 loadSeatTypesUseCase,
                 loadSeatsUseCase,
                 loadAllSeatsUseCase,
-                loadSeatLayoutsUseCase,
+                loadClubMapUseCase,
                 createBookingUseCase,
                 loadMyBookingsUseCase,
                 cancelBookingUseCase

@@ -10,10 +10,11 @@ import com.example.computerclub.domain.usecase.AdminCancelBookingUseCase
 import com.example.computerclub.domain.usecase.DeactivateSeatUseCase
 import com.example.computerclub.domain.usecase.GetAllBookingsUseCase
 import com.example.computerclub.domain.usecase.LoadAllSeatsUseCase
+import com.example.computerclub.domain.usecase.LoadClubMapUseCase
 import com.example.computerclub.domain.usecase.LoadClubsUseCase
-import com.example.computerclub.domain.usecase.LoadSeatLayoutsUseCase
 import com.example.computerclub.domain.usecase.UpdateSeatNameUseCase
 import com.example.computerclub.domain.usecase.UpdateSeatStatusUseCase
+import com.example.computerclub.domain.model.MapObjectType
 import com.example.computerclub.presentation.home.utils.BookingTimeUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,7 +37,7 @@ class AdminViewModel(
     private val adminCancelBookingUseCase: AdminCancelBookingUseCase,
     private val loadClubsUseCase: LoadClubsUseCase,
     private val loadAllSeatsUseCase: LoadAllSeatsUseCase,
-    private val loadSeatLayoutsUseCase: LoadSeatLayoutsUseCase,
+    private val loadClubMapUseCase: LoadClubMapUseCase,
     private val deactivateSeatUseCase: DeactivateSeatUseCase,
     private val updateSeatNameUseCase: UpdateSeatNameUseCase,
     private val updateSeatStatusUseCase: UpdateSeatStatusUseCase
@@ -182,19 +183,21 @@ class AdminViewModel(
     }
 
     private suspend fun mergeSeatsWithLayout(clubId: Int, activeSeats: List<Seat>): List<Seat> {
-        val layouts = loadSeatLayoutsUseCase().getOrElse { return activeSeats }
+        val layouts = loadClubMapUseCase(clubId)
+            .getOrElse { return activeSeats }
+            .filter { it.type == MapObjectType.SEAT }
         val activeSeatsById = activeSeats.associateBy { it.id }
         val usedSeatIds = mutableSetOf<Int>()
         val seatsFromLayout = layouts
             .mapNotNull { layout ->
-                val seatId = layout.seatId ?: return@mapNotNull null
+                val seatId = layout.seatId?.toInt() ?: return@mapNotNull null
                 usedSeatIds += seatId
                 activeSeatsById[seatId] ?: Seat(
                     id = seatId,
                     clubId = clubId,
                     typeId = 0,
-                    name = layout.displayText.ifBlank { layout.label },
-                    type = inferSeatType(layout.room, layout.displayText, layout.label),
+                    name = layout.title.orEmpty().ifBlank { seatId.toString() },
+                    type = inferSeatType(layout.title.orEmpty()),
                     pricePerHour = 0.0,
                     processor = "",
                     gpu = "",
@@ -208,8 +211,7 @@ class AdminViewModel(
         return seatsFromLayout + activeSeats.filter { it.id !in usedSeatIds }
     }
 
-    private fun inferSeatType(room: String, displayText: String, label: String): String {
-        val source = "$room $displayText $label"
+    private fun inferSeatType(source: String): String {
         return when {
             source.contains("VIP", ignoreCase = true) -> "VIP"
             source.contains("PS", ignoreCase = true) -> "PS5"
@@ -245,7 +247,7 @@ class AdminViewModel(
         private val adminCancelBookingUseCase: AdminCancelBookingUseCase,
         private val loadClubsUseCase: LoadClubsUseCase,
         private val loadAllSeatsUseCase: LoadAllSeatsUseCase,
-        private val loadSeatLayoutsUseCase: LoadSeatLayoutsUseCase,
+        private val loadClubMapUseCase: LoadClubMapUseCase,
         private val deactivateSeatUseCase: DeactivateSeatUseCase,
         private val updateSeatNameUseCase: UpdateSeatNameUseCase,
         private val updateSeatStatusUseCase: UpdateSeatStatusUseCase
@@ -257,7 +259,7 @@ class AdminViewModel(
                 adminCancelBookingUseCase = adminCancelBookingUseCase,
                 loadClubsUseCase = loadClubsUseCase,
                 loadAllSeatsUseCase = loadAllSeatsUseCase,
-                loadSeatLayoutsUseCase = loadSeatLayoutsUseCase,
+                loadClubMapUseCase = loadClubMapUseCase,
                 deactivateSeatUseCase = deactivateSeatUseCase,
                 updateSeatNameUseCase = updateSeatNameUseCase,
                 updateSeatStatusUseCase = updateSeatStatusUseCase

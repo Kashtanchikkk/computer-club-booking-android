@@ -42,8 +42,8 @@ internal fun HomeBottomBar(
             NavigationBarItem(
                 selected = selectedTab == HomeTab.Admin,
                 onClick = { onTabSelected(HomeTab.Admin) },
-                icon = { Icon(Icons.Default.Settings, contentDescription = "Администрирование") },
-                label = { Text("Администрирование") },
+                icon = { Icon(Icons.Default.Settings, contentDescription = "Админ панель") },
+                label = { Text("Админ панель") },
                 colors = bottomBarItemColors()
             )
         } else {

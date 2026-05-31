@@ -69,6 +69,23 @@ data class SeatLayoutDto(
     val displayText: String
 )
 
+enum class MapObjectTypeDto {
+    ROOM,
+    WALL,
+    SEAT
+}
+
+data class MapObjectDto(
+    val id: Long,
+    val type: MapObjectTypeDto,
+    val title: String? = null,
+    val x: Int,
+    val y: Int,
+    val width: Int,
+    val height: Int,
+    val seatId: Long? = null
+)
+
 data class BookingDto(
     val id: Int,
     val userId: Int,

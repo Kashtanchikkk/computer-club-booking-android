@@ -11,9 +11,9 @@ import com.example.computerclub.domain.usecase.CreateBookingUseCase
 import com.example.computerclub.domain.usecase.DeactivateSeatUseCase
 import com.example.computerclub.domain.usecase.GetAllBookingsUseCase
 import com.example.computerclub.domain.usecase.LoadAllSeatsUseCase
+import com.example.computerclub.domain.usecase.LoadClubMapUseCase
 import com.example.computerclub.domain.usecase.LoadClubsUseCase
 import com.example.computerclub.domain.usecase.LoadMyBookingsUseCase
-import com.example.computerclub.domain.usecase.LoadSeatLayoutsUseCase
 import com.example.computerclub.domain.usecase.LoadSeatTypesUseCase
 import com.example.computerclub.domain.usecase.LoadSeatsUseCase
 import com.example.computerclub.domain.usecase.LoginUseCase
@@ -37,7 +37,7 @@ class AppContainer(context: Context) {
     val loadSeatTypesUseCase = LoadSeatTypesUseCase(repository)
     val loadSeatsUseCase = LoadSeatsUseCase(repository)
     val loadAllSeatsUseCase = LoadAllSeatsUseCase(repository)
-    val loadSeatLayoutsUseCase = LoadSeatLayoutsUseCase(repository)
+    val loadClubMapUseCase = LoadClubMapUseCase(repository)
     val createBookingUseCase = CreateBookingUseCase(repository)
     val loadMyBookingsUseCase = LoadMyBookingsUseCase(repository)
     val cancelBookingUseCase = CancelBookingUseCase(repository)

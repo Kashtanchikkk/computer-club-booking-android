@@ -78,7 +78,7 @@ fun ComputerClubApp(
                 state = state,
                 onLogout = authViewModel::logout,
                 onTabSelected = homeViewModel::selectTab,
-                onRefreshSeats = homeViewModel::loadSeats,
+                onRefreshMapData = homeViewModel::refreshMapData,
                 onRefreshBookings = homeViewModel::loadBookings,
                 onClubSelected = homeViewModel::selectClub,
                 onSeatTypeSelected = homeViewModel::selectSeatType,

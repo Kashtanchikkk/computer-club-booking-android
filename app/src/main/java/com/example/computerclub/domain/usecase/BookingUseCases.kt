@@ -1,6 +1,6 @@
 package com.example.computerclub.domain.usecase
 
-import com.example.computerclub.domain.model.SeatLayout
+import com.example.computerclub.domain.model.MapObject
 import com.example.computerclub.domain.repository.ComputerClubRepository
 
 class LoadSeatsUseCase(private val repository: ComputerClubRepository) {
@@ -11,8 +11,8 @@ class LoadAllSeatsUseCase(private val repository: ComputerClubRepository) {
     suspend operator fun invoke(clubId: Int) = repository.loadAllSeats(clubId)
 }
 
-class LoadSeatLayoutsUseCase(private val repository: ComputerClubRepository) {
-    suspend operator fun invoke(): Result<List<SeatLayout>> = repository.getSeatLayouts()
+class LoadClubMapUseCase(private val repository: ComputerClubRepository) {
+    suspend operator fun invoke(clubId: Int): Result<List<MapObject>> = repository.loadClubMap(clubId)
 }
 
 class LoadSeatTypesUseCase(private val repository: ComputerClubRepository) {

@@ -51,13 +51,14 @@ internal fun MapRoom(
 internal fun MapWall(
     x: Int,
     y: Int,
-    width: Int
+    width: Int,
+    height: Int
 ) {
     Box(
         modifier = Modifier
             .offset(x.dp, y.dp)
             .width(width.dp)
-            .height(6.dp)
+            .height(height.dp)
             .background(Color(0xFF9B9B9B), RoundedCornerShape(2.dp))
     )
 }

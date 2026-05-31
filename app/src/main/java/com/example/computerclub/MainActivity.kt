@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
             loadSeatTypesUseCase = appContainer.loadSeatTypesUseCase,
             loadSeatsUseCase = appContainer.loadSeatsUseCase,
             loadAllSeatsUseCase = appContainer.loadAllSeatsUseCase,
-            loadSeatLayoutsUseCase = appContainer.loadSeatLayoutsUseCase,
+            loadClubMapUseCase = appContainer.loadClubMapUseCase,
             createBookingUseCase = appContainer.createBookingUseCase,
             loadMyBookingsUseCase = appContainer.loadMyBookingsUseCase,
             cancelBookingUseCase = appContainer.cancelBookingUseCase
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
             adminCancelBookingUseCase = appContainer.adminCancelBookingUseCase,
             loadClubsUseCase = appContainer.loadClubsUseCase,
             loadAllSeatsUseCase = appContainer.loadAllSeatsUseCase,
-            loadSeatLayoutsUseCase = appContainer.loadSeatLayoutsUseCase,
+            loadClubMapUseCase = appContainer.loadClubMapUseCase,
             deactivateSeatUseCase = appContainer.deactivateSeatUseCase,
             updateSeatNameUseCase = appContainer.updateSeatNameUseCase,
             updateSeatStatusUseCase = appContainer.updateSeatStatusUseCase

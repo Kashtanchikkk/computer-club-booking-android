@@ -47,7 +47,7 @@ fun HomeScreen(
     state: ComputerClubUiState,
     onLogout: () -> Unit,
     onTabSelected: (HomeTab) -> Unit,
-    onRefreshSeats: () -> Unit,
+    onRefreshMapData: () -> Unit,
     onRefreshBookings: () -> Unit,
     onClubSelected: (Int) -> Unit,
     onSeatTypeSelected: (Int) -> Unit,
@@ -125,7 +125,10 @@ fun HomeScreen(
                     },
                     onStartChanged = { selectedStartMinute = it },
                     onPeriodSelected = onPeriodSelected,
-                    onNextStep = { bookingStep = 2 },
+                    onNextStep = {
+                        onRefreshMapData()
+                        bookingStep = 2
+                    },
                     onSeatsSelected = onSeatsSelected
                 )
                 HomeTab.Bookings -> bookingsTab(state, onRefreshBookings, onCancelBooking)
@@ -234,9 +237,9 @@ private fun androidx.compose.foundation.lazy.LazyListScope.seatsTab(
         item {
             ClubMap(
                 seats = state.allSeats,
-                layouts = state.seatLayouts,
-                isLayoutsLoading = state.isSeatLayoutsLoading,
-                layoutsError = state.seatLayoutsError,
+                mapObjects = state.mapObjects,
+                isMapLoading = state.isMapLoading,
+                mapError = state.mapError,
                 bookedSeatIds = bookedSeatIds,
                 onSeatsSelected = onSeatsSelected
             )

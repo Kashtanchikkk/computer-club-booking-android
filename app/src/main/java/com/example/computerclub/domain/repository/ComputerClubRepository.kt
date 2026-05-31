@@ -2,8 +2,8 @@ package com.example.computerclub.domain.repository
 
 import com.example.computerclub.domain.model.Booking
 import com.example.computerclub.domain.model.ComputerClubBranch
+import com.example.computerclub.domain.model.MapObject
 import com.example.computerclub.domain.model.Seat
-import com.example.computerclub.domain.model.SeatLayout
 import com.example.computerclub.domain.model.SeatType
 import com.example.computerclub.domain.model.User
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +27,7 @@ interface ComputerClubRepository {
 
     suspend fun loadAllSeats(clubId: Int): Result<List<Seat>>
 
-    suspend fun getSeatLayouts(): Result<List<SeatLayout>>
+    suspend fun loadClubMap(clubId: Int): Result<List<MapObject>>
 
     suspend fun createBooking(seatId: Int, startTime: String, endTime: String): Result<Booking>
 

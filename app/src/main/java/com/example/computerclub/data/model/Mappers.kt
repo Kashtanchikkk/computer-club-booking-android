@@ -2,6 +2,8 @@ package com.example.computerclub.data.model
 
 import com.example.computerclub.domain.model.Booking
 import com.example.computerclub.domain.model.ComputerClubBranch
+import com.example.computerclub.domain.model.MapObject
+import com.example.computerclub.domain.model.MapObjectType
 import com.example.computerclub.domain.model.Seat
 import com.example.computerclub.domain.model.SeatLayout
 import com.example.computerclub.domain.model.SeatType
@@ -56,6 +58,17 @@ fun SeatLayoutDto.toDomain() = SeatLayout(
     height = height,
     color = color,
     displayText = displayText
+)
+
+fun MapObjectDto.toDomain() = MapObject(
+    id = id,
+    type = MapObjectType.valueOf(type.name),
+    title = title,
+    x = x,
+    y = y,
+    width = width,
+    height = height,
+    seatId = seatId
 )
 
 fun BookingDto.toDomain() = Booking(

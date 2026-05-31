@@ -5,10 +5,10 @@ import com.example.computerclub.data.model.BookingDto
 import com.example.computerclub.data.model.ComputerClubDto
 import com.example.computerclub.data.model.CreateBookingRequestDto
 import com.example.computerclub.data.model.LoginRequestDto
+import com.example.computerclub.data.model.MapObjectDto
 import com.example.computerclub.data.model.RefreshTokenRequestDto
 import com.example.computerclub.data.model.RegisterRequestDto
 import com.example.computerclub.data.model.SeatDto
-import com.example.computerclub.data.model.SeatLayoutDto
 import com.example.computerclub.data.model.SeatTypeDto
 import com.example.computerclub.data.model.UpdateSeatNameRequestDto
 import com.example.computerclub.data.model.UpdateSeatStatusRequestDto
@@ -49,8 +49,11 @@ interface ComputerClubApi {
     @GET("seat-types")
     suspend fun seatTypes(@Header("Authorization") token: String): Response<List<SeatTypeDto>>
 
-    @GET("seat-layouts")
-    suspend fun seatLayouts(): Response<List<SeatLayoutDto>>
+    @GET("clubs/{clubId}/map")
+    suspend fun clubMap(
+        @Header("Authorization") token: String,
+        @Path("clubId") clubId: Int
+    ): Response<List<MapObjectDto>>
 
     @POST("bookings")
     suspend fun createBooking(

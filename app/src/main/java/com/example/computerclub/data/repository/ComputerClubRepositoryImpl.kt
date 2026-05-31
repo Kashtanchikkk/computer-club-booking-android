@@ -12,8 +12,8 @@ import com.example.computerclub.data.remote.ApiErrorParser
 import com.example.computerclub.data.remote.ComputerClubApi
 import com.example.computerclub.domain.model.Booking
 import com.example.computerclub.domain.model.ComputerClubBranch
+import com.example.computerclub.domain.model.MapObject
 import com.example.computerclub.domain.model.Seat
-import com.example.computerclub.domain.model.SeatLayout
 import com.example.computerclub.domain.model.SeatType
 import com.example.computerclub.domain.model.User
 import com.example.computerclub.domain.repository.ComputerClubRepository
@@ -65,8 +65,8 @@ class ComputerClubRepositoryImpl(
         authorizedBody { token -> api.seats(token, clubId) }.map { it.toDomain() }
     }
 
-    override suspend fun getSeatLayouts(): Result<List<SeatLayout>> = safeCall {
-        api.seatLayouts().requireBody().map { it.toDomain() }
+    override suspend fun loadClubMap(clubId: Int): Result<List<MapObject>> = safeCall {
+        authorizedBody { token -> api.clubMap(token, clubId) }.map { it.toDomain() }
     }
 
     override suspend fun createBooking(
